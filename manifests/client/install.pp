@@ -1,4 +1,4 @@
-class database::postgresql::client::install(
+class postgresql::client::install(
   $version
 ){
   

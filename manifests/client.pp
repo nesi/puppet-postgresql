@@ -1,9 +1,9 @@
-class database::postgresql::client(
+class postgresql::client(
   $version = '9.1'
 ){
   case $operatingsystem {
     Ubuntu:{
-      class{'database::postgresql::client::install':
+      class{'postgresql::client::install':
         version => $version,
       }
     }
