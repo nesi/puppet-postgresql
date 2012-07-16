@@ -1,7 +1,4 @@
-# Manifest for installing PostgreSQL in NeVE
-# Used https://github.com/uggedal/puppet-module-postgresql as a template
-
-class postgresql(
+class postgresql::server(
   $version = '9.1',
   $listen_addresses = 'localhost',
   $max_connections = 100,
@@ -9,7 +6,7 @@ class postgresql(
   ) {
   case $operatingsystem {
     Ubuntu: {
-      class{'postgresql::server':
+      class{'postgresql::server::install':
         version => $version,
         listen_addresses => $listen_addresses,
         max_connections => $max_connections,
@@ -21,3 +18,4 @@ class postgresql(
     }
   }
 }
+
