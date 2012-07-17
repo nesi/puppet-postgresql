@@ -60,7 +60,7 @@ listen_addresses = <%= listen_addresses %>    # what IP address(es) to listen on
           # comma-separated list of addresses;
           # defaults to 'localhost', '*' = all
           # (change requires restart)
-port = 5432       # (change requires restart)
+port = <%= psql_port %>       # (change requires restart)
 max_connections = <%= max_connections %>      # (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per 
 # connection slot, plus lock space (see max_locks_per_transaction).
@@ -348,7 +348,7 @@ log_line_prefix = '%t '     # special values:
           #   %q = stop here in non-session
           #        processes
           #   %% = '%'
-          # e.g. '<%u%%%d> '
+          # e.g. '<%%u%%%d> '
 #log_lock_waits = off     # log lock waits >= deadlock_timeout
 #log_statement = 'none'     # none, ddl, mod, all
 #log_temp_files = -1      # log temporary files equal or larger

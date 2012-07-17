@@ -2,7 +2,8 @@ class postgresql::server::install(
   $version,
   $listen_addresses,
   $max_connections,
-  $shared_buffers
+  $shared_buffers,
+  $psql_port
   ) {
 
   package {"postgresql":
@@ -47,28 +48,22 @@ class postgresql::server::install(
 
   file {"pg_hba.conf":
     path    => "/etc/postgresql/${version}/main/pg_hba.conf",
-    source  => [
-      "puppet:///modules/postgresql/${version}/${fqdn}/pg_hba.conf",
-      "puppet:///modules/postgresql/${version}/${operatingsystem}/pg_hba.conf",
-      "puppet:///modules/postgresql/${version}/pg_hba.conf",
-      "puppet:///modules/postgresql/pg_hba.conf",
-    ],
+    content => template("postgresql/${version}/pg_hba.conf.erb"),
+    owner   => 'postgres',
+    group   => 'postgres',
     mode    => 640,
     require => [Package['postgresql'],User['postgres']],
     notify  => Service['postgresql'],
-    owner   => 'postgres',
-    group   => 'postgres',
   }
 
   file {"postgresql.conf":
     path    => "/etc/postgresql/${version}/main/postgresql.conf",
     content => template("postgresql/${version}/postgresql.conf.erb"),
+    owner   => 'postgres',
+    group   => 'postgres',
     require => Package['postgresql'],
     notify  => Service['postgresql'],
   }
 
-  $foo = File['postgresql.conf']['path']
-
-  warning("Does this work: ${foo}")
 }  
 
