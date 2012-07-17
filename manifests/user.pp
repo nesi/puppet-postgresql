@@ -5,7 +5,7 @@
 define postgres::createuser(
 	$ensure 				= present,
 	$user_password 	= false,
-	$logoutput			= false,
+	$logoutput			= false
 ){
 	if $ensure == 'present' {		
 	  postgresql::psql{"createuser-${name}":
