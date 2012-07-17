@@ -25,7 +25,7 @@ define postgresql::psql(
   if $password {
     exec{"psql -h ${host} $database -c \"${sql}\" 2>&1 && sleep 5":
       user        => $user,
-      path        => ['/usr/bin','bin'],
+      path        => ['/usr/bin','/bin'],
       timeout     => $timeout,
       logoutput   => $logoutput,
       unless      => "psql -h ${host} $database -c $sqlcheck",
@@ -34,7 +34,7 @@ define postgresql::psql(
   } else {
     exec{"psql -h ${host} --username=${username} $database -c \"${sql}\" 2>&1 && sleep 5":
       user        => $user,
-      path        => ['/usr/bin','bin'],
+      path        => ['/usr/bin','/bin'],
       environment => "PGPASSWORD=${password}",
       timeout     => $timeout,
       logoutput   => $logoutput,
