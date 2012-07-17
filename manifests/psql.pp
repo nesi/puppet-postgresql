@@ -7,8 +7,8 @@
 # Mostly copied from https://github.com/KrisBuytaert/puppet-postgres/blob/master/manifests/init.pp
 
 define postgresql::psql(
-  $host       = 'localhost',
   $user       = 'postgres',
+  $host       = 'localhost',
   $password   = false,
   $database,
   $sql,
@@ -22,8 +22,8 @@ define postgresql::psql(
   # NOTE: The sqlcheck commands are specifically set up so
   # they can end in a > test or | grep, and must return 0 exit codes
 
-  if $password {
-    exec{"psql -h ${host} $database -c \"${sql}\" 2>&1 && sleep 5":
+  if $password != false {
+    exec{"psql $database -c \"${sql}\" 2>&1 && sleep 5":
       user        => $user,
       path        => ['/usr/bin','/bin'],
       timeout     => $timeout,
@@ -32,7 +32,7 @@ define postgresql::psql(
       require     =>  Package['postgresql_client'],
     }
   } else {
-    exec{"psql -h ${host} --username=${username} $database -c \"${sql}\" 2>&1 && sleep 5":
+    exec{"psql --username=${username} $database -c \"${sql}\" 2>&1 && sleep 5":
       user        => $user,
       path        => ['/usr/bin','/bin'],
       environment => "PGPASSWORD=${password}",
