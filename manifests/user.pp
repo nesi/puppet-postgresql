@@ -1,8 +1,10 @@
 # This can only create a user on the PostgreSLQ server, and can not create users remotely
 #
 # Using checks from https://github.com/uggedal/puppet-module-postgresql/blob/master/manifests/user.pp
+#
+# DOES NOT MAKE SUPERUSERS. This is intentional.
 
-define postgres::createuser(
+define postgresql::user(
 	$ensure 				= present,
 	$user_password 	= false,
 	$logoutput			= false
