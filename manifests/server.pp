@@ -3,7 +3,7 @@ class postgresql::server(
   $listen_addresses = 'localhost',
   $max_connections  = 100,
   $shared_buffers   = '24MB',
-  $psql_port        = 5432
+  $psql_port        = '5432'
   ) {
   case $operatingsystem {
     Ubuntu: {
