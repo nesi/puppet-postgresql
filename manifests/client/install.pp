@@ -2,7 +2,7 @@ class postgresql::client::install(
   $version
 ){
   
-  package{'postgresql-client':
+  package{'postgresql_client':
     ensure  => installed,
     name    => $operatingsystem ? {
       Ubuntu  => "postgresql-client-${version}",
