@@ -6,13 +6,13 @@
 
 define postgresql::user(
 	$ensure 				= present,
-	$user_password 	= false,
+	$password,
 	$logoutput			= false
 ){
 	if $ensure == 'present' {		
 	  postgresql::psql{"createuser-${name}":
 	    database 	=> "postgres",
-	    sql      	=> "CREATE ROLE ${name} WITH LOGIN PASSWORD '${user_password}';",
+	    sql      	=> "CREATE ROLE ${name} WITH LOGIN PASSWORD '${password}';",
 	    sqlcheck 	=> "\"SELECT usename FROM pg_user WHERE usename = '${name}'\" | grep ${name}",
 	    logoutput	=> $logoutput,
 	    require  	=>  [Package['postgresql_client'],Service['postgresql']],
