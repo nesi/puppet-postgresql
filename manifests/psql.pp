@@ -22,23 +22,22 @@ define postgresql::psql(
   # NOTE: The sqlcheck commands are specifically set up so
   # they can end in a > test or | grep, and must return 0 exit codes
 
-  if $password != false {
-    exec{"psql $database -c \"${sql}\" 2>&1 && sleep 5":
+  if $password == false {
+    exec{"psql ${database} -c \"${sql}\" 2>&1 && sleep 5" :
       user        => $user,
       path        => ['/usr/bin','/bin'],
       timeout     => $timeout,
       logoutput   => $logoutput,
-      unless      => "psql -h ${host} $database -c $sqlcheck",
+      unless      => "psql ${database} -c ${sqlcheck}",
       require     =>  Package['postgresql_client'],
     }
   } else {
-    exec{"psql --username=${username} $database -c \"${sql}\" 2>&1 && sleep 5":
-      user        => $user,
+    exec{"psql -U ${user} ${database} -c \"${sql}\" 2>&1 && sleep 5" :
       path        => ['/usr/bin','/bin'],
       environment => "PGPASSWORD=${password}",
       timeout     => $timeout,
       logoutput   => $logoutput,
-      unless      => "psql -U $username $database -c $sqlcheck",
+      unless      => "psql -U ${username} ${database} -c ${sqlcheck}",
       require     => Package['postgresql_client'],
     }
   }
