@@ -52,6 +52,7 @@ class postgresql::server::install(
     owner   => 'postgres',
     group   => 'postgres',
     mode    => 640,
+    replace => false,
     require => [Package['postgresql'],User['postgres']],
     notify  => Service['postgresql'],
   }
