@@ -9,6 +9,9 @@ define postgresql::user(
 	$password,
 	$logoutput			= false
 ){
+
+	# Should sanity check $name here
+
 	if $ensure == 'present' {		
 	  postgresql::psql{"createuser-${name}":
 	    database 	=> "postgres",
