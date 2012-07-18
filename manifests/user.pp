@@ -2,7 +2,7 @@
 #
 # Using checks from https://github.com/uggedal/puppet-module-postgresql/blob/master/manifests/user.pp
 #
-# DOES NOT MAKE SUPERUSERS. This is intentional.
+# DOES NOT MAKE SUPERUSERS. This is intentional. There can only be one.
 
 define postgresql::user(
 	$ensure 				= present,

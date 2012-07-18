@@ -5,6 +5,9 @@ class postgresql::server(
   $shared_buffers   = '24MB',
   $psql_port        = '5432'
   ) {
+
+  require postgresql::client
+
   case $operatingsystem {
     Ubuntu: {
       class{'postgresql::server::install':
