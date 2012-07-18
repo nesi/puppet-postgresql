@@ -6,7 +6,6 @@
 define postgresql::database(
 	$ensure 		= present,
 	$owner 			= 'postgres',
-	$encoding 	= 'UTF8',
 	$logoutput	= false
 ){
 
@@ -16,7 +15,7 @@ define postgresql::database(
 		postgresql::psql{"createdb-${name}":
 	    database 	=> 'postgres',
 	    logoutput	=> $logoutput,
-	    sql      	=> "CREATE DATABASE ${name} WITH OWNER = ${owner} ENCODING = 'UTF8';",
+	    sql      	=> "CREATE DATABASE ${name} WITH OWNER = ${owner};",
 	    sqlcheck 	=> "\"SELECT datname FROM pg_database WHERE datname ='${name}'\" | grep ${name}",
 	    require  	=> [Service['postgresql'],Postgresql::User[$owner]],
 	  }
