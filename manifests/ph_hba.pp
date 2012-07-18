@@ -9,7 +9,7 @@ define postgresql::pg_hba(
 	$auth_method	= 'md5'
 ){
 
-	unless $auth_method in ['md5','trust','reject','peer','password'] {
+	if ! ($auth_method in ['md5','trust','reject','peer','password']) {
 		$error_msg = "The authorisation METHOD '${auth_method}' is not supported in postgresql::pg_hba on ${fqdn}."
 	}
 
