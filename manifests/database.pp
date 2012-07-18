@@ -14,7 +14,6 @@ define postgresql::database(
 
 	if $ensure == present {
 		postgresql::psql{"createdb-${name}":
-	    username 	=> 'postgres',
 	    database 	=> 'postgres',
 	    logoutput	=> $logoutput,
 	    sql      	=> "CREATE DATABASE ${name} WITH OWNER = ${owner} ENCODING = 'UTF8';",
@@ -23,7 +22,6 @@ define postgresql::database(
 	  }
 	} elsif $ensure == absent {
 		postgresql::psql{"destroydb-${name}":
-	    username 	=> 'postgres',
 	    database 	=> 'postgres',
 	    logoutput	=> $logoutput,
 	    sql      	=> "DROP DATABASE ${name};",
