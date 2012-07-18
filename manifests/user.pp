@@ -21,7 +21,7 @@ define postgresql::user(
 		postgresql::psql{"destroyuser-${name}":
 	    database 	=> "postgres",
 	    sql      	=> "DROP ROLE ${name};",
-	    sqlcheck 	=> "'SELECT rolname FROM pg_catalog.pg_roles;' |! grep '^ ${name}$'",
+	    sqlcheck 	=> "'SELECT rolname FROM pg_catalog.pg_roles;' |grep '^ ${name}$';if [ $? -eq 0 ]; then false; else true;fi;",
 	    logoutput	=> $logoutput,
 	    require  	=>  [Package['postgresql_client'],Service['postgresql']],
 	  }
