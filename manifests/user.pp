@@ -15,7 +15,7 @@ define postgresql::user(
 	if $ensure == 'present' {		
 	  postgresql::psql{"createuser-${name}":
 	    database 	=> "postgres",
-	    sql      	=> "CREATE ROLE ${name} WITH LOGIN PASSWORD '${password}';",
+	    sql      	=> "CREATE ROLE ${name} WITH LOGIN ENCRYPTED PASSWORD '${password}';",
 	    sqlcheck 	=> "\"SELECT usename FROM pg_user WHERE usename = '${name}'\" | grep ${name}",
 	    logoutput	=> $logoutput,
 	    require  	=>  [Package['postgresql_client'],Service['postgresql']],
