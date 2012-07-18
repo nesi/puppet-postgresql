@@ -15,7 +15,7 @@ define postgresql::pg_hba(
 
 	$db_string = inline_template("<%= databases.join(',') %>")
 
-	unless $error_msg {
+	if ! $error_msg {
 		case $type {
 			local:{
 				$pg_hba_line = "${type} 	${db_string} 	${user} 			${auth_method}"
@@ -26,7 +26,7 @@ define postgresql::pg_hba(
 		}
 	}
 
-	unless $error_msg {
+	if ! $error_msg {
 		augeas {"pg_hba_${user}_${fqdn}":
 			context => "/etc/postgresql/${postgresql::server::version}/main/pg_hba.conf",
 			changes => [$pg_hba_line],
