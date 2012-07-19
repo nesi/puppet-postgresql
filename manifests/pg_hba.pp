@@ -7,7 +7,7 @@ define postgresql::pg_hba(
 	$ensure				= present,
 	$type					= 'local',
 	$databases		= ['all'],
-	$user,
+	$user 				= 'all',
 	$host					= false,
 	$auth_method	= 'md5'
 ){
@@ -23,6 +23,9 @@ define postgresql::pg_hba(
 			local:{
 				$pg_hba_line = "${type} 	${db_string} 	${user} 			${auth_method}"
 			}
+			host:{
+				$pg_hba_line = "${type} 	${db_string} 	${user} 	${host} 	${auth_method}"
+			}
 			default:{
 				$error_msg = "The TYPE '${type}' is not supported in postgresql::pg_hba on ${fqdn}"
 			}
@@ -30,7 +33,11 @@ define postgresql::pg_hba(
 	}
 
 	if ! $error_msg {
-		# Insert line into pg_hba here!
+		file_line{'${type}_${user}_${auth_method}_pghba':
+			ensure		=> $ensure,
+			line 			=> $pg_hba_line,
+			file 			=> "/etc/postgresql/${postgresql::server::version}/main/pg_hba.conf",
+		}
 	} else {
 		err($error_msg)
 	}
