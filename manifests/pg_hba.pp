@@ -1,4 +1,7 @@
 # Manifest for managing pg_hba entries
+# no currently operational!
+
+# If you need it later, code it later.
 
 define postgresql::pg_hba(
 	$ensure				= present,
@@ -27,10 +30,7 @@ define postgresql::pg_hba(
 	}
 
 	if ! $error_msg {
-		augeas {"pg_hba_${user}_${fqdn}":
-			context => "/etc/postgresql/${postgresql::server::version}/main/pg_hba.conf",
-			changes => [$pg_hba_line],
-		}
+		# Insert line into pg_hba here!
 	} else {
 		err($error_msg)
 	}

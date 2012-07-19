@@ -19,7 +19,7 @@ define postgresql::user(
 			default => "CREATE ROLE ${name} WITH LOGIN ENCRYPTED PASSWORD '${password}';",
 			}
 	} else {
-		$createuser_cmd = "CREATE ROLE ${name}"
+		$createuser_cmd = "CREATE ROLE ${name} WITH LOGIN"
 	}
 
 	if $ensure == 'present' {		
