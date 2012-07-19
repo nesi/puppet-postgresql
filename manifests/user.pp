@@ -6,16 +6,26 @@
 
 define postgresql::user(
 	$ensure 				= present,
-	$password,
+	$password 			= false,
+	$encrypt 				= false,
 	$logoutput			= false
 ){
 
 	# Should sanity check $name here
 
+	if $password != false {
+		$createuser_cmd = $encrypt ? {
+			false 	=> "CREATE ROLE ${name} WITH LOGIN PASSWORD '${password}';",
+			default => "CREATE ROLE ${name} WITH LOGIN ENCRYPTED PASSWORD '${password}';",
+			}
+	} else {
+		$createuser_cmd = "CREATE ROLE ${name}"
+	}
+
 	if $ensure == 'present' {		
 	  postgresql::psql{"createuser-${name}":
 	    database 	=> "postgres",
-	    sql      	=> "CREATE ROLE ${name} WITH LOGIN ENCRYPTED PASSWORD '${password}';",
+	    sql      	=> $createuser_cmd,
 	    sqlcheck 	=> "\"SELECT usename FROM pg_user WHERE usename = '${name}'\" | grep ${name}",
 	    logoutput	=> $logoutput,
 	    require  	=>  [Package['postgresql_client'],Service['postgresql']],
