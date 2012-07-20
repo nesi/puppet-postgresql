@@ -37,6 +37,7 @@ define postgresql::pg_hba(
 			ensure		=> $ensure,
 			line 			=> $pg_hba_line,
 			path 			=> "/etc/postgresql/${postgresql::server::version}/main/pg_hba.conf",
+			notify		=> Service['postgresql'],
 		}
 	} else {
 		err($error_msg)
