@@ -37,7 +37,7 @@ Thes classes have been tested on Ubuntu 12.04 LTS, they do not have any other re
 
 This will install the PostgreSQL service and the client with default settings on a puppet node:
 
-		include potsgresql
+		include postgresql
 
 ## Install only the PostgreSQL client
 
@@ -57,7 +57,7 @@ With the default parameters:
 
 		include postgresql::server
 
-## Parameters
+### Parameters
 
 * **version**: Specifies the PostgreSQL service version to install, defaults to '9.1'
 * **listen_addresses**: Specifies a comma separated list of IP addresses and/or host names that the PostgreSQL service will listen on, defaults to 'localhost'
@@ -95,22 +95,63 @@ A minimal execution:
 
 ## PostgreSQL Database definition
 
+This resource definition ensures that a specific PostgreSQL database is present, or absent.
+
+**WARNING:** Using this to define that a database is absent will DROP the database without prejucide, confirmation, or anything. The database will be gone.
+
+Minimal database definition:
+
+		postgresql::database{'monkeybase': ensure => present}
+
+The `ensure` property isn't necessary, but makes it explicitly clear in you Puppet declarations what the intended action is. This will create a database named 'monkeybase' whith the 'postgres' user as the owner.
+
 ### Parameters
+
+* **ensure**: Declares if the database should be 'present' or 'absent', defaults to 'present'. Seen previous **WARNING** about the risks of declaring a database 'absent'.
+* **owner**: Sets the user who will own the database, defaults to 'postgres'. The user is required to have been defined using `postgresql::user`.
+* **logoutput**: If set to 'true' the output from the command creating the database will be logged to puppet, defaults to 'false'.
 
 ## PostgreSQL User definition
 
+This resource definition ensures that a PostgreSQL database user is present or absent.
+
 Maybe this definition should be 'role', or have an alias...
+
+Minimal user definition:
+
+		postgresql::user('monkeys': ensure => present)
+
+This will ensure the user 'monkeys' is created in PostgreSQL with no password.
 
 ### Parameters
 
+* **ensure**: Declares if the user should be 'present' or 'absent', defaults to 'present'
+* **password**: Sets the user's password, defaults to 'false' which creates a user with *no* password.
+* **encrypt**:	If set to 'true' a user's password will be ENCRYPTED, defaults to false.
+* **logoutput**: If set to 'true' the output from the command creating the user will be logged to puppet, defaults to 'false'.
+
 ## PostgreSQL access rules for `pg_hba.conf` definition
 
-## Parameters
+**NOTE**: only the 'local' type has been tested
+
+### Parameters
+
+* **ensure**: Declares if this entry should be 'present' or 'absent', defaults to present
+* **type**: Set's the access rule type, only types 'local' and 'host' are supported, defaults to 'local'
+* **databases**: A list of databases for this accessrule, defaults to ['all']
+* **user**: A user for this access rule, defaults to 'all'
+* **host**: The host name of the remote client being granted access to the PostgreSQL server, defaults to 'false' which indicates no hosts given.
+* **auth_method**: Defines the authentication method that is required, defaults to 'md5'. Only 'md5', 'trust', 'reject', 'peer', 'password' methods are supported.
 
 # To do...
 
 * have the psql command definition excute on remote PostgreSQL servers, it should, but it hasn't been tested.
 * Check that sql and sqlcheck statements are sane and safe.
+* Something that can dump databases
+* Something that can back up and restore databases
+* More user creation parameters.
+* Access rules should require the databases and users
+* Access rules should handle lists of users.
 
 # References
 
