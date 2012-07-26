@@ -31,6 +31,8 @@ It might seem bit excessive, but it will make sure the submodule isn't headless.
 
 # Using the PostgreSQL installer classes
 
+Thes classes have been tested on Ubuntu 12.04 LTS, they do not have any other requirements.
+
 ## PostgreSQL installation with default settings
 
 This will install the PostgreSQL service and the client with default settings on a puppet node:
@@ -65,7 +67,50 @@ With the default parameters:
 
 # Using the PostgreSQL resource definitions
 
-...
+These definitions have been tested on Ubuntu 12.04 LTS, they require the puppet::server class, which can be done in the node definition, or in another puppet module.
+
+## PostgreSQL command definition
+
+This defines a command to be execuded using the psql client on the server. Currently it runs locally on the PostgreSQL server. It's used as a wrapper around the `psql` client to in the other resource definitions in this module.
+
+**NOTE:** To use this resource will need _two_ SQL statements, one that is to be executed, and second SQL check that returns a 0 exit code when the first statement should _not_ be run.
+
+A minimal execution:
+
+		postgresql::psql{"createuser-gort":
+				sql      	=> "CREATE ROLE gort WITH LOGIN",
+				sqlcheck 	=> "\"SELECT usename FROM pg_user WHERE usename = 'gort'\" | grep gort",
+		}
+
+### Parameters
+
+* **user**: The PostgreSQL user running the command, defaults to 'postgres'
+* **password**: The PostgreSQL user's password, which defaults to 'false' meaning use passwordless methods of accessing PostgreSQL.
+* **host**: The host name of the PostgreSQL server, this defaults to 'localhost'. (not yet tested on remote database servers)
+* **database**: This is tne name of the database to which the SQL statement is to be submitted to, defaults to 'postgres'
+* **sql**: This is the SQL statement to be submitted, this is a required parameter and has no default. The statement will need to be a safe string, there are no sanity checks on SQL statements.
+* **sqlcheck**: This is a SQL statement used to check if the statement given in the `sql` parameter should not be executed. This parameter is required and there is no default. This statement needs to include escaped quotes (e.g \"SELECT foo FROM baa\") and permits the addition of pipes at the end of the statement to test the statement's output. `| grep ${foo};if [ $? -eq 0 ]; then false; else true;fi;` is a useful construct for inverting the test's exit code as it's not possible to prefix `!` to a pipe.
+* **timeout**: Changes the timeoute in seconds to wait for the sql and sqlcheck statements to complete, defaults to 600 seconds (10 minutes).
+* **logoutput**: If set to 'true' this will log output to the Puppet logs, defaults to 'false'.
+
+## PostgreSQL Database definition
+
+### Parameters
+
+## PostgreSQL User definition
+
+Maybe this definition should be 'role', or have an alias...
+
+### Parameters
+
+## PostgreSQL access rules for `pg_hba.conf` definition
+
+## Parameters
+
+# To do...
+
+* have the psql command definition excute on remote PostgreSQL servers, it should, but it hasn't been tested.
+* Check that sql and sqlcheck statements are sane and safe.
 
 # References
 
