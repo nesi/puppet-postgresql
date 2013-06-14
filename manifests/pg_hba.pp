@@ -33,7 +33,7 @@ define postgresql::pg_hba(
   }
 
   if ! $error_msg {
-    file_line{'${type}_${user}_${auth_method}_pghba':
+    file_line{$title:
       ensure    => $ensure,
       line      => $pg_hba_line,
       path      => "/etc/postgresql/${postgresql::server::version}/main/pg_hba.conf",
